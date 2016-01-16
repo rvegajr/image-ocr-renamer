@@ -1,0 +1,23 @@
+{
+  "name": "image-ocr-renamer",
+  "version": "0.1.0",
+  "description": "image-ocr-renamer",
+  "main": "app.js",
+  "author": {
+    "name": "Ricardo Vega",
+    "email": "rvegajr@noctusoft.com"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "bluebird": "^3.1.1",
+    "configstore": "^1.4.0",
+    "datejs": "0.0.2",
+    "extend": "^3.0.0",
+    "gm": "^1.21.1",
+    "node-tesseract": "^0.2.7",
+    "progress": "^1.1.8",
+    "string": "^3.3.1",
+    "walk": "^2.3.9",
+    "winston": "^2.1.1"
+  }
+}

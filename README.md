@@ -73,7 +73,7 @@ V0.1 - Initial Development and Checkin
 
 ## Credits
 
-Much thanks to the following authors of the great node projects used in this utility.
+Much thanks to the authors above for the great node projects used in this utility.
 Thanks specifically to
 GraphicsMagick (http://www.graphicsmagick.org/Copyright.html)
 and Tesseract-OCR (https://code.google.com/p/tesseract-ocr/)
