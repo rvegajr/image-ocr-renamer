@@ -6,58 +6,43 @@ This node.js project will synchronously and recursively loop through all JPGs in
 ## Installation
 #### Prerequisites
 ###### 3rd Party Required Modules
-1. GraphicsMagick - http://www.graphicsmagick.org
-2. tesseract-ocr - https://code.google.com/p/tesseract-ocr/
+GraphicsMagick - http://www.graphicsmagick.org
+tesseract-ocr - https://code.google.com/p/tesseract-ocr/
 
-###### Node Modules
-1. Async.js 
-	- https://github.com/caolan/async 
-	- npm install async
-	
-2. bluebird 
-	- http://bluebirdjs.com/docs/getting-started.html 
-	- npm install bluebird
-	
-3. configstore 
-	- https://www.npmjs.com/package/configstore 
-	- npm install configstore
-	
-4. datejs 
-	- https://www.npmjs.com/package/datejs 
-	- npm install datejs
-5. extend 
-	- https://www.npmjs.com/package/extend 
-	- npm install extend
-	
-6. gm - !! 
-	- https://www.npmjs.com/package/gm 
-	- npm install gm
-	
-7. node-tesseract - !! 
-	- https://www.npmjs.com/package/node-tesseract 
-	- npm install node-tesseract
-	
-8. progress 
-	- https://www.npmjs.com/package/progress 
-	- npm install progress
-	
-9. string 
-	- https://www.npmjs.com/package/string 
-	- npm install --save string
-	
-10. walk 
-	- https://www.npmjs.com/package/walk 
-	- npm install --save walk
-	
-11. winston 
-	- https://github.com/winstonjs/winston 
-	- npm install winston
-	
+###### Windows Installation 
+1. Go to https://code.google.com/p/tesseract-ocr/downloads/detail?name=tesseract-ocr-setup-3.02.02.exe and download and install the setup for Tesseract OCR
+2. Go to http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick-binaries/1.3.23/ and install GraphicsMagick
+3. Open the Windows command prompt, change the directory the cloned project path,  then type "npm install" (this will install the packages required for the app)
+4. type "node app.js" and let it fly
+
+###### MacOSX Installation 
+
+1. Download and install MacPorts https://www.macports.org/install.php
+2. Open the OSX terminal and type "sudo port install tesseract" - go get some coffee or a shot of tequila, this will take a bit
+3. Once tesseract is installed, using the format of "sudo port install tesseract-<langcode>", thus I typed "sudo port install tesseract-eng"...  Look at https://www.macports.org/ports.php?by=name&substr=tesseract- to see additional languages, Thanks https://code.google.com/p/tesseract-ocr/wiki/ReadMe for the installation instructions
+4. In the terminal, type "sudo port install GraphicsMagick" 
+5. Clone the project, change the directory to where the project has been cloned,  then type "npm install" (this will install the packages required for the app)
+6. type "node app.js" and let it fly
 
 
 ## Usage
+The following code lines define the regions that will be defined.  You can add multiple 'then' clauses to add more regions.  These are passed through 'data.results' 
 
-1.
+            ocrutils.OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 440, 'name' : 'codename' } })
+            .then(function (data) {
+                return OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 195, 'name' : 'gamedatetime' }, results : data.results });
+            })
+            //.then(function (data) {
+            //    return OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 195, 'name' : 'gamedatetime' }, results : data.results });
+            //})
+
+Data will be returned through the "data" parameter
+
+                if (data.results.length > 0) TextResults[data.results[0].name] = data.results[0].ocrdtext;
+                if (data.results.length > 1) TextResults[data.results[1].name] = data.results[1].ocrdtext;
+                //if (data.results.length > 2) TextResults[data.results[2].name] = data.results[2].ocrdtext;  <== uncommend me if you uncomment the .then( above.
+			
+Use the value passed through this to process funky OCRed characters and rename the file 			
 
 ## Contributing
 
@@ -73,17 +58,51 @@ V0.1 - Initial Development and Checkin
 
 ## Credits
 
-Much thanks to the authors above for the great node projects used in this utility.
+Much thanks to the following authors of the great node projects used in this utility.
 Thanks specifically to
 GraphicsMagick (http://www.graphicsmagick.org/Copyright.html)
 and Tesseract-OCR (https://code.google.com/p/tesseract-ocr/)
 
+
+###### Node Modules
+Async.js 
+	- https://github.com/caolan/async 
+	- npm install async
+bluebird 
+	- http://bluebirdjs.com/docs/getting-started.html 
+	- npm install bluebird
+configstore 
+	- https://www.npmjs.com/package/configstore 
+	- npm install configstore
+datejs 
+	- https://www.npmjs.com/package/datejs 
+	- npm install datejs
+extend 
+	- https://www.npmjs.com/package/extend 
+	- npm install extend
+gm - !! 
+	- https://www.npmjs.com/package/gm 
+	- npm install gm
+node-tesseract - !! 
+	- https://www.npmjs.com/package/node-tesseract 
+	- npm install node-tesseract
+progress 
+	- https://www.npmjs.com/package/progress 
+	- npm install progress
+string 
+	- https://www.npmjs.com/package/string 
+	- npm install --save string
+walk 
+	- https://www.npmjs.com/package/walk 
+	- npm install --save walk
+winston 
+	- https://github.com/winstonjs/winston 
+	- npm install winston
+	
 ## License
 Ricardo Vega Jr. - image-ocr-renamer
-
 Utility to ocr a directory of images based on regions within the image and copy them to a target directory with a new name.
 Copyright (C) 2016 Ricardo Vega Jr.
-
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
