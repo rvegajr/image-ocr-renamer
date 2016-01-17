@@ -25,7 +25,6 @@ OCRImageSection = function (options) {
     
     var loadImageAsync = function (fileNameToLoad) {
         return new Promise(function (fulfill, reject) {
-            //if (error) reject(error);
             fulfill({ 'img' : gm(fileNameToLoad), 'result' : {} });
         })
     };
@@ -102,12 +101,12 @@ OCRImageSection = function (options) {
         return data.ocrdtext;
     };
     loadImageAsync(imageFileName)
-                .then(getImageSizeAsync)
-                .then(getImageResAsync)
-                .then(cropImageAsync)
-                .then(writeImageAsync)
-                .then(oCRImageAsync)
-                .done(completed, errorHandler);
+    .then(getImageSizeAsync)
+    .then(getImageResAsync)
+    .then(cropImageAsync)
+    .then(writeImageAsync)
+    .then(oCRImageAsync)
+    .done(completed, errorHandler);
 };
 
 OCRImageSectionAsync = function (options) {

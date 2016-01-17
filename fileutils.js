@@ -37,16 +37,16 @@ module.exports = {
                 }
                 next();
             });
-
+            
             walker.on("errors", function (root, nodeStatsArray, next) {
                 reject(root);
             });
-                        
+            
             walker.on('end', function () {
                 fulfill(files);
-            });            
+            });
         })
-    }    
+    }
     , recursiveProcessHTMLFilesInPath : function (currentPath, fOnFile, fOnComplete) {
         var walk = require('walk');
         var files = [];
@@ -80,13 +80,13 @@ module.exports = {
             }
             else if (stats.isDirectory()) {
                 this.recursiveProcessHTMLFilesInPath(currentFile, fOnFile);
-            }            
+            }
             next();
         });
         
         walker.on('end', function () {
             fOnComplete(totals);
-        }); 
+        });
     }
     ,
     recursiveProcessHTMLFilesInPath2: function (currentPath, fOnFile, fOnComplete) {
@@ -151,7 +151,10 @@ module.exports = {
 
         }
     }
-    , recordTotals : function () {
+    , appendToFileName : function (pathToAppendTo, stringToAppend) {
+        return path.dirname(pathToAppendTo) + path.basename(pathToAppendTo) + stringToAppend + path.extname(pathToAppendTo);
+    },
+    recordTotals : function () {
         return totals;
     }
     , setReprocessFile : function (val) {

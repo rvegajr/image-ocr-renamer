@@ -3,8 +3,8 @@ var thisPath = path.dirname(process.argv[1]) + path.sep;
 
 /* Set User variables here */
 ReprocessFiles = true;  //set this to reprocess files that have already been processed
-InputPath = "";
-OutputPath = "";
+InputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner" + path.sep + "";
+OutputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner_Output" + path.sep + "";
 /* End set user variables */
 
 var Promise = require('bluebird');
@@ -22,7 +22,7 @@ if (InputPath == "") InputPath = path.normalize(thisPath + 'data' + path.sep + '
 if (OutputPath == "") OutputPath = path.normalize(thisPath + 'data' + path.sep + 'output' + path.sep);
 var WorkPath = os.tmpdir() + path.sep + pjson.name + path.sep;
 
-Console.info('LSOCR Image Processor ' + pjson.version + '\n*********************************');
+Console.info(pjson.name + ' ' + pjson.version + '\n*********************************');
 Console.info('InputPath=' + InputPath);
 Console.info('OutputPath=' + OutputPath);
 Console.info('ReprocessFiles=' + ReprocessFiles);
@@ -68,18 +68,24 @@ if (!fs.existsSync(WorkPath)) {
                 TextResults['src'] = data.src;
                 Console.info('\nText Found: ' + JSON.stringify(TextResults));
                 
+                var CodeNameRaw = TextResults.codename;
+                var CodeName = CodeNameRaw.replace(/\n/gi, '').trim();  //lets try to clean up code name,  OCRs can be messy
+                
                 var GameDateTimeRaw = TextResults.gamedatetime;
                 var GameDateTimeFixed = GameDateTimeRaw.replace(/[^0-9/\s\:]/gi, '').trim();  //lets try to clean up the date,  OCRs can be messy
                 var GameDateTime = (new Date(GameDateTimeFixed).toString('yyyyMMdd_HHmmss'));  //normalize the date
-                
-                var CodeName = TextResults.codename.trim();
-                var sTargetPath = OutputPath + GameDateTime + path.sep;
-                var sNewFileName = sTargetPath + CodeName + path.extname(fileName);
-                if (!fs.existsSync(sTargetPath)) fs.mkdirSync(sTargetPath);
-                fs.writeFileSync(sNewFileName, fs.readFileSync(fileName));
-                bar.tick(1);
-                callback();
-
+                try {
+                    var sTargetPath = OutputPath + GameDateTime + path.sep;
+                    var sNewFileName = sTargetPath + CodeName + path.extname(fileName);
+                    if (!fs.existsSync(sTargetPath)) fs.mkdirSync(sTargetPath);
+                    fs.writeFileSync(sNewFileName, fs.readFileSync(fileName));
+                    bar.tick(1);
+                    callback();
+                } catch (e) {
+                    Console.error("Error while procesing '" + fileName + "'. " + e);
+                    bar.tick(1);
+                    callback("Error while procesing '" + fileName + "'. " + e);
+                }
             }, fError);
         }, function done() {
             fileutils.deleteFilesInPath(WorkPath, true);
