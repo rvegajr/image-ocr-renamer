@@ -3,8 +3,8 @@ var thisPath = path.dirname(process.argv[1]) + path.sep;
 
 /* Set User variables here */
 ReprocessFiles = true;  //set this to reprocess files that have already been processed
-InputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner" + path.sep + "";
-OutputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner_Output" + path.sep + "";
+//InputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner" + path.sep + "";
+//OutputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner_Output" + path.sep + "";
 /* End set user variables */
 
 var Promise = require('bluebird');
@@ -52,14 +52,10 @@ if (!fs.existsSync(WorkPath)) {
                 bar.tick(1);
                 callback(e);
             }
-            
-            ocrutils.OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 440, 'name' : 'codename' } })
+            ocrutils.OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1025, y : 420, 'name' : 'codename' } })
             .then(function (data) {
-                return OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 195, 'name' : 'gamedatetime' }, results : data.results });
+                return OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1025, y : 160, 'name' : 'gamedatetime' }, results : data.results });
             })
-            //.then(function (data) {
-            //    return OCRImageSectionAsync({ imageFileName : fileName, region : { w : 450, h : 150, x : 1075, y : 195, 'name' : 'gamedatetime' }, results : data.results });
-            //})
             .done(function (data) {
                 var TextResults = {};
                 if (data.results.length > 0) TextResults[data.results[0].name] = data.results[0].ocrdtext;

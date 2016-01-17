@@ -54,7 +54,8 @@ OCRImageSection = function (options) {
             try {
                 //this will scale the image base on the resolution.  The size 
                 var scaler = (data.result.res / 300) * 1.0;
-                data.img.crop((options.region.w * scaler), (options.region.h * scaler), (options.region.x * scaler), (options.region.y * scaler));
+                //Sometimes the images look like it is oriented correctly,  but crop would return strange offsets, autoOrient() seems to work well
+                data.img.autoOrient().gravity("NorthWest").crop((options.region.w * scaler), (options.region.h * scaler), (options.region.x * scaler), (options.region.y * scaler));
                 fulfill({ 'img' : data.img, 'result' : data.result, 'name' : options.region.name });
             } catch (e) {
                 reject(e);
