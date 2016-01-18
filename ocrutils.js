@@ -15,7 +15,13 @@ var pjson = require(thisPath + 'package.json');
 var WorkPath = os.tmpdir() + path.sep + pjson.name + path.sep;
 
 OCRImageSection = function (options) {
-    options = extend({ imageFileName : '', region : { w : 0, h : 0, x : 0, y : 0, name : '' }, results : [], fOnComplete : function (data) { return true; }, fOnError : function (e) { Console.error(e); return false; } }, options);
+    options = extend({
+        imageFileName : ''
+        , region : { w : 0, h : 0, x : 0, y : 0, name : '' }
+        , results : []
+        , fOnComplete : function (data) { return true; }
+        , fOnError : function (e) { Console.error(e); return false; }
+    }, options);
     var imageFileName = options.imageFileName;
     var outFileName = path.basename(imageFileName);
     if (!fs.existsSync(WorkPath)) {

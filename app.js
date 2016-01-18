@@ -1,8 +1,9 @@
-﻿var path = require('path'); var InputPath = ""; var OutputPath = ""; var ReprocessFiles = false;
+﻿var path = require('path'); var InputPath = ""; var OutputPath = ""; var ReprocessFiles = false; var CompressOutputImages = false;
 var thisPath = path.dirname(process.argv[1]) + path.sep;
 
 /* Set User variables here */
-ReprocessFiles = true;  //set this to reprocess files that have already been processed
+//ReprocessFiles = true;  //set this to reprocess files that have already been processed
+//CompressOutputImages = true;
 //InputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner" + path.sep + "";
 //OutputPath = "C:" + path.sep + "Temp" + path.sep + "Scanner_Output" + path.sep + "";
 /* End set user variables */
@@ -18,6 +19,7 @@ var ProgressBar = require('progress');
 var async = require('async');
 var pjson = require(thisPath + 'package.json');
 var os = require('os');
+var gm = require('gm');
 if (InputPath == "") InputPath = path.normalize(thisPath + 'data' + path.sep + 'input' + path.sep);
 if (OutputPath == "") OutputPath = path.normalize(thisPath + 'data' + path.sep + 'output' + path.sep);
 var WorkPath = os.tmpdir() + path.sep + pjson.name + path.sep;
@@ -74,9 +76,21 @@ if (!fs.existsSync(WorkPath)) {
                     var sTargetPath = OutputPath + GameDateTime + path.sep;
                     var sNewFileName = sTargetPath + CodeName + path.extname(fileName);
                     if (!fs.existsSync(sTargetPath)) fs.mkdirSync(sTargetPath);
-                    fs.writeFileSync(sNewFileName, fs.readFileSync(fileName));
-                    bar.tick(1);
-                    callback();
+                    if (CompressOutputImages) {
+                        fCompressImagePromise(fileName, sNewFileName).done(
+                            function (data) {
+                                bar.tick(1);
+                                callback();
+                            },
+                            function (err) {
+                                callback(err);
+                            }
+                        )
+                    } else {
+                        fs.writeFileSync(sNewFileName, fs.readFileSync(fileName));
+                        bar.tick(1);
+                        callback();
+                    }
                 } catch (e) {
                     Console.error("Error while procesing '" + fileName + "'. " + e);
                     bar.tick(1);
@@ -88,4 +102,18 @@ if (!fs.existsSync(WorkPath)) {
             Console.info(pjson.name + ' completed.');
         });
     })
+};
+
+var fCompressImagePromise = function (imageFileName, outputFileName) {
+    return new Promise(function (fulfill, reject) {
+        var outFileName = path.basename(outputFileName);
+        gm(imageFileName).resize(640)
+        .write(WorkPath + outFileName, function (err) {
+            if (err == null) {
+                fileutils.moveFile(WorkPath + outFileName, outputFileName, function () {
+                    fulfill({'src' : imageFileName, 'output' : outputFileName});
+                });
+            } else reject(err);
+        });
+    });    
 };
