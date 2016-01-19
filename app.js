@@ -67,13 +67,21 @@ if (!fs.existsSync(WorkPath)) {
                 Console.info('\nText Found: ' + JSON.stringify(TextResults));
                 
                 var CodeNameRaw = TextResults.codename;
-                var CodeName = CodeNameRaw.replace(/\n/gi, '').trim();  //lets try to clean up code name,  OCRs can be messy
+                var CodeName = CodeNameRaw.replace(/\n/gi, '').replace(/[^A-Za-z0-9/\s\:\-]/gi, '').trim();  //lets try to clean up code name,  OCRs can be messy
+                if (CodeName.length == 0) {  //If this date was invalid (meanig 
+                    CodeName = path.basename(fileName, path.extname(fileName));
+                }
                 
                 var GameDateTimeRaw = TextResults.gamedatetime;
                 var GameDateTimeFixed = GameDateTimeRaw.replace(/[^0-9/\s\:]/gi, '').trim();  //lets try to clean up the date,  OCRs can be messy
-                var GameDateTime = (new Date(GameDateTimeFixed).toString('yyyyMMdd_HHmmss'));  //normalize the date
+                var DateParsed = new Date(GameDateTimeFixed);
+                //this particular use case allows us to compare years to make sure we have a valid date.  This tournament happened in the year this wwas written, so
+                //  it becomes an easy way to determine if the year didn't come over as 200 AD
+                var IsValidDate = ( !isNaN((DateParsed.valueOf())) && ((new Date().getYear())==(DateParsed.getYear())) ); 
+                var GameDateTime = (DateParsed.toString('yyyyMMdd_HHmmss'));  //normalize the date
                 try {
                     var sTargetPath = OutputPath + GameDateTime + path.sep;
+                    if (!IsValidDate) sTargetPath = OutputPath + '_BADDATE' + path.sep;
                     var sNewFileName = sTargetPath + CodeName + path.extname(fileName);
                     if (!fs.existsSync(sTargetPath)) fs.mkdirSync(sTargetPath);
                     if (CompressOutputImages) {
