@@ -10,7 +10,7 @@ GraphicsMagick - http://www.graphicsmagick.org
 tesseract-ocr - https://code.google.com/p/tesseract-ocr/
 
 ###### Windows Installation 
-1. Go to https://code.google.com/p/tesseract-ocr/downloads/detail?name=tesseract-ocr-setup-3.02.02.exe and download and install the setup for Tesseract OCR
+1. Go to https://github.com/parrot-office/tesseract/releases/tag/3.5.1 and download and install the setup for Tesseract OCR for your environment
 2. Go to http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick-binaries/1.3.23/ and install GraphicsMagick
 3. Open the Windows command prompt, change the directory the cloned project path,  then type "npm install" (this will install the packages required for the app)
 4. type "node app.js" and let it fly
